@@ -1,0 +1,50 @@
+[
+  {
+    "query": "招标文件和全套图纸都在项目目录里，按现有技术标模板编写第一章项目总体认识、工程概况和现场现状，先给我计划。",
+    "should_trigger": true
+  },
+  {
+    "query": "新建工业厂房投标，帮我把项目定位、建设意义、建筑结构机电概况和项目特点写成 Word。",
+    "should_trigger": true
+  },
+  {
+    "query": "这个章节虽然叫工程总体概述，但内容要包括项目规模、各专业设计概况和周边环境，请根据招标资料编制。",
+    "should_trigger": true
+  },
+  {
+    "query": "修改学校技术标现有的项目认识章节，保留所有格式，只补充结构、基坑和室外工程概况。",
+    "should_trigger": true
+  },
+  {
+    "query": "老旧小区改造技术标第一章写得太空，把既有现状、改造范围、专业概况和项目特点补充完整。",
+    "should_trigger": true
+  },
+  {
+    "query": "两版总图面积不一致，先核查资料并给出项目概况编写计划，确认后再生成 Word。",
+    "should_trigger": true
+  },
+  {
+    "query": "根据深基坑图纸编制一份完整的深基坑支护、降水、监测和应急专项施工方案。",
+    "should_trigger": false
+  },
+  {
+    "query": "只帮我读取这张建筑设计说明 PDF，把里面所有文字原样提取到 txt。",
+    "should_trigger": false
+  },
+  {
+    "query": "审核技术标的投标报价，检查清单漏项并测算措施费是否合理。",
+    "should_trigger": false
+  },
+  {
+    "query": "把这份已经定稿的 Word 统一成宋体小四，调整页眉页脚和目录，不改任何内容。",
+    "should_trigger": false
+  },
+  {
+    "query": "根据结构图计算高支模架体参数并出计算书。",
+    "should_trigger": false
+  },
+  {
+    "query": "总结这份招标文件的废标条款、投标保证金和开标时间。",
+    "should_trigger": false
+  }
+]

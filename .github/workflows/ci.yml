@@ -1,0 +1,73 @@
+name: 自动检查
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 检查 Skill 和测试文件
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          name = "construction-technical-bid-project-understanding"
+          skill = Path("SKILL.md").read_text(encoding="utf-8")
+          assert re.search(rf"^name:\s*{re.escape(name)}\s*$", skill, re.MULTILINE)
+          assert "description:" in skill.split("---", 2)[1]
+
+          package = json.loads(Path("package.json").read_text(encoding="utf-8"))
+          assert package["name"] == name
+          assert package["version"] == "1.0.1"
+          assert package["license"] == "MIT"
+
+          evals = json.loads(Path("evals/evals.json").read_text(encoding="utf-8"))
+          assert evals["skill_name"] == name
+          assert len(evals["evals"]) >= 5
+          ids = [item["id"] for item in evals["evals"]]
+          assert len(ids) == len(set(ids))
+          for item in evals["evals"]:
+              assert item["prompt"] and item["expected_output"]
+              assert isinstance(item["files"], list)
+              assert item["expectations"]
+
+          triggers = json.loads(Path("evals/trigger-evals.json").read_text(encoding="utf-8"))
+          assert any(item["should_trigger"] for item in triggers)
+          assert any(not item["should_trigger"] for item in triggers)
+          PY
+
+      - name: 检查安装器和 npm 包
+        shell: bash
+        run: |
+          node --check bin/install.cjs
+          npm pack --dry-run
+
+      - name: 隔离安装和更新测试
+        shell: bash
+        run: |
+          node bin/install.cjs --codex-home "$RUNNER_TEMP/codex"
+          test -f "$RUNNER_TEMP/codex/skills/construction-technical-bid-project-understanding/SKILL.md"
+          if node bin/install.cjs --codex-home "$RUNNER_TEMP/codex"; then exit 1; fi
+          node bin/install.cjs --codex-home "$RUNNER_TEMP/codex" --force
+          find "$RUNNER_TEMP/codex/skills" -maxdepth 1 -type d -name 'construction-technical-bid-project-understanding.backup-*' | grep .
