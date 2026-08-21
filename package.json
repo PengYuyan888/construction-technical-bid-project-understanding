@@ -1,10 +1,15 @@
 {
   "name": "construction-technical-bid-project-understanding",
-  "version": "1.0.1",
-  "description": "依据招标文件、施工图及项目资料编制建筑工程技术标项目认识和工程概况章节的 Codex Skill。",
+  "version": "1.1.0",
+  "description": "依据招标文件、施工图及项目资料编制建筑工程技术标项目认识和工程概况章节的 Agent Skill。",
   "keywords": [
-    "codex-skill",
-    "openai-codex",
+    "agent-skill",
+    "agent-skills",
+    "codex",
+    "claude-code",
+    "cursor",
+    "gemini-cli",
+    "github-copilot",
     "construction",
     "technical-bid",
     "docx"

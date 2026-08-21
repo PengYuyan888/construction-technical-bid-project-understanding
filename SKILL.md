@@ -1,6 +1,11 @@
 ---
 name: construction-technical-bid-project-understanding
 description: 编制或修改建筑工程技术标中的项目认识、项目定位、建设意义、工程概况、设计概况、项目特点、施工现场现状及周边环境等章节，主要面向新建住宅、公共建筑、商业综合体、学校、医院、场馆和工业厂房，也兼容改扩建、修缮及城市更新项目。当用户要求依据招标文件、答疑、工程量清单、施工图、勘察资料、参考技术标或 Word 模板完成上述内容时使用；不要仅因章节名称不同而不触发。不要用于单纯编制施工方案、商务标或只做资料摘要。
+license: MIT
+compatibility: 适用于支持 Agent Skills 规范并可读取项目文件的代理；DOCX、PDF、图纸识读、渲染和作图能力取决于代理自身工具。
+metadata:
+  author: PengYuyan888
+  version: "1.1.0"
 ---
 
 # 建筑工程技术标项目认识与工程概况
