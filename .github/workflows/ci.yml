@@ -35,12 +35,18 @@ jobs:
           name = "construction-technical-bid-project-understanding"
           skill = Path("SKILL.md").read_text(encoding="utf-8")
           assert re.search(rf"^name:\s*{re.escape(name)}\s*$", skill, re.MULTILINE)
-          assert "description:" in skill.split("---", 2)[1]
+          frontmatter = skill.split("---", 2)[1]
+          assert "description:" in frontmatter
+          assert re.search(r"^license:\s*MIT\s*$", frontmatter, re.MULTILINE)
+          assert "compatibility:" in frontmatter
+          assert re.search(r'^\s*version:\s*["\']?1\.1\.0["\']?\s*$', frontmatter, re.MULTILINE)
 
           package = json.loads(Path("package.json").read_text(encoding="utf-8"))
           assert package["name"] == name
-          assert package["version"] == "1.0.1"
+          assert package["version"] == "1.1.0"
           assert package["license"] == "MIT"
+          assert "Agent Skill" in package["description"]
+          assert Path("agents/generic-prompt.md").is_file()
 
           evals = json.loads(Path("evals/evals.json").read_text(encoding="utf-8"))
           assert evals["skill_name"] == name
@@ -63,11 +69,43 @@ jobs:
           node --check bin/install.cjs
           npm pack --dry-run
 
-      - name: 隔离安装和更新测试
+      - name: 隔离安装、更新和跨 Agent 目录测试
         shell: bash
         run: |
-          node bin/install.cjs --codex-home "$RUNNER_TEMP/codex"
-          test -f "$RUNNER_TEMP/codex/skills/construction-technical-bid-project-understanding/SKILL.md"
-          if node bin/install.cjs --codex-home "$RUNNER_TEMP/codex"; then exit 1; fi
-          node bin/install.cjs --codex-home "$RUNNER_TEMP/codex" --force
-          find "$RUNNER_TEMP/codex/skills" -maxdepth 1 -type d -name 'construction-technical-bid-project-understanding.backup-*' | grep .
+          skill="construction-technical-bid-project-understanding"
+          user_home="$RUNNER_TEMP/user-home"
+          mkdir -p "$user_home"
+
+          HOME="$user_home" node bin/install.cjs
+          test -f "$user_home/.agents/skills/$skill/SKILL.md"
+          if HOME="$user_home" node bin/install.cjs; then exit 1; fi
+          HOME="$user_home" node bin/install.cjs --force
+          find "$user_home/.agent-skill-backups/$skill" -mindepth 1 -maxdepth 1 -type d | grep .
+          if find "$user_home/.agents/skills" -maxdepth 1 -type d -name "$skill.backup-*" | grep .; then exit 1; fi
+
+          HOME="$user_home" node bin/install.cjs --agent codex
+          HOME="$user_home" node bin/install.cjs --agent claude-code
+          HOME="$user_home" node bin/install.cjs --agent cursor
+          HOME="$user_home" node bin/install.cjs --agent gemini-cli
+          HOME="$user_home" node bin/install.cjs --agent github-copilot
+          test -f "$user_home/.codex/skills/$skill/SKILL.md"
+          test -f "$user_home/.claude/skills/$skill/SKILL.md"
+          test -f "$user_home/.cursor/skills/$skill/SKILL.md"
+          test -f "$user_home/.gemini/skills/$skill/SKILL.md"
+          test -f "$user_home/.copilot/skills/$skill/SKILL.md"
+
+          node bin/install.cjs --scope project --project-root "$RUNNER_TEMP/project"
+          test -f "$RUNNER_TEMP/project/.agents/skills/$skill/SKILL.md"
+          node bin/install.cjs --target "$RUNNER_TEMP/custom-skills"
+          test -f "$RUNNER_TEMP/custom-skills/$skill/SKILL.md"
+          node bin/install.cjs --codex-home "$RUNNER_TEMP/legacy-codex"
+          test -f "$RUNNER_TEMP/legacy-codex/skills/$skill/SKILL.md"
+
+          detected_home="$RUNNER_TEMP/detected-home"
+          mkdir -p "$detected_home/.codex" "$detected_home/.claude" "$detected_home/.cursor" "$detected_home/.gemini" "$detected_home/.copilot"
+          HOME="$detected_home" node bin/install.cjs --all-detected
+          test -f "$detected_home/.codex/skills/$skill/SKILL.md"
+          test -f "$detected_home/.claude/skills/$skill/SKILL.md"
+          test -f "$detected_home/.cursor/skills/$skill/SKILL.md"
+          test -f "$detected_home/.gemini/skills/$skill/SKILL.md"
+          test -f "$detected_home/.copilot/skills/$skill/SKILL.md"
