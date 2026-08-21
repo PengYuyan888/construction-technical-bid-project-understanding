@@ -1,0 +1,39 @@
+{
+  "name": "construction-technical-bid-project-understanding",
+  "version": "1.0.0",
+  "description": "Codex skill for compiling project-understanding and engineering-overview sections of construction technical bids.",
+  "keywords": [
+    "codex-skill",
+    "construction",
+    "technical-bid",
+    "docx"
+  ],
+  "author": "PengYuyan888",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PengYuyan888/construction-technical-bid-project-understanding.git"
+  },
+  "homepage": "https://github.com/PengYuyan888/construction-technical-bid-project-understanding#readme",
+  "bugs": {
+    "url": "https://github.com/PengYuyan888/construction-technical-bid-project-understanding/issues"
+  },
+  "bin": {
+    "construction-technical-bid-project-understanding": "bin/install.cjs"
+  },
+  "files": [
+    "SKILL.md",
+    "agents/",
+    "assets/",
+    "evals/",
+    "references/",
+    "scripts/",
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=16.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

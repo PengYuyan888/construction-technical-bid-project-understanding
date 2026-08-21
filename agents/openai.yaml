@@ -1,0 +1,7 @@
+interface:
+  display_name: "construction-technical-bid-project-understanding"
+  short_description: "依据招标资料和图纸编制建筑工程技术标项目认识及工程概况章节"
+  default_prompt: "Use $construction-technical-bid-project-understanding to compile the project-understanding and engineering-overview section of this construction technical bid."
+
+policy:
+  allow_implicit_invocation: true
